@@ -12,9 +12,11 @@ const HelperDashboardScreen = ({
   activeRequests, 
   services, 
   onEdit, 
-  onBackToLogin, 
+  onLogout, 
   onOpenChat,
-  darkMode 
+  darkMode,
+  onLocationEdit,
+  onShowHistory
 }) => {
   const [editMode, setEditMode] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
@@ -74,6 +76,9 @@ const HelperDashboardScreen = ({
             </div>
           </div>
           <div className="flex items-center space-x-3">
+            <button onClick={onShowHistory} className="relative">
+              <Clock size={20} className={darkMode ? 'text-gray-300' : 'text-gray-500'} />
+            </button>
             <button className="relative">
               <Bell size={20} className={darkMode ? 'text-gray-300' : 'text-gray-500'} />
               {activeRequests.length > 0 && (
@@ -83,7 +88,7 @@ const HelperDashboardScreen = ({
               )}
             </button>
             <button
-              onClick={onBackToLogin}
+              onClick={onLogout}
               className={`p-2 rounded-full ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'}`}
             >
               <User size={20} />
@@ -211,6 +216,20 @@ const HelperDashboardScreen = ({
                     </div>
                   )
                 })}
+              </div>
+
+              {/* Location Section */}
+              <div className="mt-4 text-sm text-gray-600">
+                <div className="flex justify-between mb-1">
+                  <span>Location:</span>
+                  <button 
+                    onClick={onLocationEdit}
+                    className="font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center"
+                  >
+                    <MapPin size={14} className="mr-1" />
+                    {helperProfile.location || 'Downtown NYC'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

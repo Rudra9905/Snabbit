@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { MapPin, Search, Filter, Clock, Bell, AlertCircle } from 'lucide-react'
+import { MapPin, Search, Filter, Clock, Bell, AlertCircle, LogOut, Settings } from 'lucide-react'
 
 const ServicesScreen = ({
   userLocation,
@@ -18,7 +18,9 @@ const ServicesScreen = ({
   sortBy,
   setSortBy,
   notifications,
-  setShowHistory,
+  onShowHistory,
+  onLogout,
+  onLocationEdit,
 }) => {
   const filteredServices = useMemo(() => {
     return services.filter((service) => {
@@ -47,7 +49,7 @@ const ServicesScreen = ({
             )}
           </div>
           <div className="flex items-center space-x-3">
-            <button onClick={() => setShowHistory(true)} className="relative">
+            <button onClick={onShowHistory} className="relative">
               <Clock size={20} className={darkMode ? 'text-gray-300' : 'text-gray-600'} />
             </button>
             <button className="relative">
@@ -58,10 +60,20 @@ const ServicesScreen = ({
                 </span>
               )}
             </button>
-            <div className={`flex items-center text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            <button 
+              onClick={onLocationEdit}
+              className={`flex items-center text-sm ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-800'} transition-colors`}
+            >
               <MapPin size={16} className="mr-1" />
               {userLocation.address}
-            </div>
+            </button>
+            <button
+              onClick={onLogout}
+              className={`p-2 rounded-full ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
+              title="Logout"
+            >
+              <LogOut size={20} />
+            </button>
           </div>
         </div>
         <div className="space-y-3">
