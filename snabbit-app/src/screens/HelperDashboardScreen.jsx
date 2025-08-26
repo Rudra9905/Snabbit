@@ -1,7 +1,7 @@
 import React from 'react'
-import { Bell, User, Settings, MapPin, Clock } from 'lucide-react'
+import { Bell, LogOut, Settings, MapPin, Clock } from 'lucide-react'
 
-const HelperDashboardScreen = ({ helperProfile, setHelperProfile, activeRequests, services, onEdit, onBackToLogin, onOpenChat }) => (
+const HelperDashboardScreen = ({ helperProfile, setHelperProfile, activeRequests, services, onEdit, onLogout, onOpenChat, onLocationEdit, onShowHistory }) => (
   <div className="min-h-screen bg-gray-50">
     <div className="bg-white shadow-sm p-4">
       <div className="flex items-center justify-between mb-4">
@@ -10,9 +10,16 @@ const HelperDashboardScreen = ({ helperProfile, setHelperProfile, activeRequests
           <p className="text-sm text-gray-600">Welcome back, {helperProfile.name || 'Helper'}!</p>
         </div>
         <div className="flex items-center space-x-3">
+          <button onClick={onShowHistory} className="relative">
+            <Clock size={20} className="text-gray-500" />
+          </button>
           <Bell size={20} className="text-gray-500" />
-          <button onClick={onBackToLogin} className="text-gray-500">
-            <User size={20} />
+          <button 
+            onClick={onLogout} 
+            className="p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+            title="Logout"
+          >
+            <LogOut size={20} />
           </button>
         </div>
       </div>
@@ -67,7 +74,13 @@ const HelperDashboardScreen = ({ helperProfile, setHelperProfile, activeRequests
         <div className="mt-4 text-sm text-gray-600">
           <div className="flex justify-between mb-1">
             <span>Location:</span>
-            <span className="font-medium">{helperProfile.location || 'Downtown NYC'}</span>
+            <button 
+              onClick={onLocationEdit}
+              className="font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center"
+            >
+              <MapPin size={14} className="mr-1" />
+              {helperProfile.location || 'Downtown NYC'}
+            </button>
           </div>
         </div>
       </div>

@@ -8,7 +8,9 @@ import BookingScreen from '../screens/BookingScreen'
 import BookingConfirmedScreen from '../screens/BookingConfirmedScreen'
 import HelperRegistrationScreen from '../screens/HelperRegistrationScreen'
 import HelperDashboardScreen from '../screens/HelperDashboardScreen'
+import HistoryScreen from '../screens/HistoryScreen'
 import ChatModal from '../components/ChatModal'
+import LocationEditModal from '../components/LocationEditModal'
 
 const SnabbitApp = () => {
   const [currentView, setCurrentView] = useState('login')
@@ -33,6 +35,8 @@ const SnabbitApp = () => {
   const [priceRange, setPriceRange] = useState([20, 100])
   const [sortBy, setSortBy] = useState('time')
   const [showHistory, setShowHistory] = useState(false)
+  const [showLocationEdit, setShowLocationEdit] = useState(false)
+  const [currentHistoryView, setCurrentHistoryView] = useState(null)
 
   // Location and profile state
   const [userLocation, setUserLocation] = useState({
@@ -67,8 +71,83 @@ const SnabbitApp = () => {
 
   const [helperRegistered, setHelperRegistered] = useState(false)
   const [activeRequests, setActiveRequests] = useState([])
-  const [bookingHistory, setBookingHistory] = useState([])
+  const [bookingHistory, setBookingHistory] = useState([
+    {
+      id: 1,
+      service: { id: 1, name: 'Tech Support', icon: '💻', basePrice: 40, time: '30-60 min' },
+      helper: { id: 1, name: 'Sarah Johnson', avatar: '👩', rating: 4.9, reviews: 127 },
+      customerLocation: { address: 'Downtown, NYC' },
+      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+      status: 'completed',
+      paymentMethod: 'card',
+      customer: { firstName: 'John', lastName: 'Doe' }
+    },
+    {
+      id: 2,
+      service: { id: 3, name: 'House Cleaning', icon: '🧹', basePrice: 35, time: '60-120 min' },
+      helper: { id: 3, name: 'Lisa Rodriguez', avatar: '👩‍🦱', rating: 4.9, reviews: 156 },
+      customerLocation: { address: 'Midtown, NYC' },
+      timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
+      status: 'completed',
+      paymentMethod: 'card',
+      customer: { firstName: 'John', lastName: 'Doe' }
+    },
+    {
+      id: 3,
+      service: { id: 2, name: 'Furniture Assembly', icon: '🔧', basePrice: 50, time: '45-90 min' },
+      helper: { id: 2, name: 'Mike Chen', avatar: '👨', rating: 4.8, reviews: 89 },
+      customerLocation: { address: 'Uptown, NYC' },
+      timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+      status: 'cancelled',
+      paymentMethod: 'card',
+      customer: { firstName: 'John', lastName: 'Doe' }
+    },
+    {
+      id: 4,
+      service: { id: 5, name: 'Pet Care', icon: '🐕', basePrice: 30, time: '30-90 min' },
+      helper: { id: 3, name: 'Lisa Rodriguez', avatar: '👩‍🦱', rating: 4.9, reviews: 156 },
+      customerLocation: { address: 'Downtown, NYC' },
+      timestamp: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000), // 10 days ago
+      status: 'completed',
+      paymentMethod: 'card',
+      customer: { firstName: 'John', lastName: 'Doe' }
+    }
+  ])
   const [earnings, setEarnings] = useState({ daily: 0, weekly: 0, monthly: 0 })
+  
+  // Helper service history (for helper dashboard)
+  const [helperServiceHistory, setHelperServiceHistory] = useState([
+    {
+      id: 1,
+      service: { id: 1, name: 'Tech Support', icon: '💻', basePrice: 40, time: '30-60 min' },
+      customer: { name: 'John Doe', avatar: '👨' },
+      customerLocation: { address: 'Downtown, NYC' },
+      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
+      status: 'completed',
+      paymentMethod: 'card',
+      earnings: 40
+    },
+    {
+      id: 2,
+      service: { id: 6, name: 'Tutoring', icon: '📚', basePrice: 45, time: '45-90 min' },
+      customer: { name: 'Sarah Wilson', avatar: '👩' },
+      customerLocation: { address: 'Midtown, NYC' },
+      timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+      status: 'completed',
+      paymentMethod: 'card',
+      earnings: 45
+    },
+    {
+      id: 3,
+      service: { id: 1, name: 'Tech Support', icon: '💻', basePrice: 40, time: '30-60 min' },
+      customer: { name: 'Mike Johnson', avatar: '👨‍💼' },
+      customerLocation: { address: 'Uptown, NYC' },
+      timestamp: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), // 6 days ago
+      status: 'completed',
+      paymentMethod: 'card',
+      earnings: 40
+    }
+  ])
 
   // Enhanced services with categories and emergency options
   const services = useMemo(() => ([
@@ -229,6 +308,39 @@ const SnabbitApp = () => {
     }
   }
 
+  const handleLogout = () => {
+    setUserRole(null)
+    setUserDetails(null)
+    setCurrentView('login')
+    setSelectedService(null)
+    setSelectedHelper(null)
+    setChatOpen(false)
+    setMessages([])
+    setNewMessage('')
+    setSearchQuery('')
+    setCurrentBooking(null)
+    setNotifications([])
+    setFavorites([])
+    setReviewMode(false)
+    setSelectedRating(5)
+    setReviewText('')
+    setPaymentMethod('card')
+    setEmergencyMode(false)
+    setShowFilters(false)
+    setPriceRange([20, 100])
+    setSortBy('time')
+    setShowHistory(false)
+    setHelperRegistered(false)
+    setActiveRequests([])
+    setBookingHistory([])
+    setEarnings({ daily: 0, weekly: 0, monthly: 0 })
+  }
+
+  const handleLocationUpdate = (newLocation) => {
+    setUserLocation(newLocation)
+    setShowLocationEdit(false)
+  }
+
   const handleServiceSelect = (service) => {
     setSelectedService(service)
     setCurrentView('helpers')
@@ -324,7 +436,12 @@ const SnabbitApp = () => {
           sortBy={sortBy}
           setSortBy={setSortBy}
           notifications={notifications}
-          setShowHistory={setShowHistory}
+          onShowHistory={() => {
+            setCurrentHistoryView('services')
+            setCurrentView('history')
+          }}
+          onLogout={handleLogout}
+          onLocationEdit={() => setShowLocationEdit(true)}
         />
       )}
       {currentView === 'helpers' && (
@@ -387,8 +504,26 @@ const SnabbitApp = () => {
           activeRequests={activeRequests}
           services={services}
           onEdit={() => setCurrentView('helper-registration')}
-          onBackToLogin={() => setCurrentView('login')}
+          onLogout={handleLogout}
           onOpenChat={() => setChatOpen(true)}
+          onLocationEdit={() => setShowLocationEdit(true)}
+          onShowHistory={() => {
+            setCurrentHistoryView('helper-dashboard')
+            setCurrentView('history')
+          }}
+        />
+      )}
+
+      {currentView === 'history' && (
+        <HistoryScreen
+          bookingHistory={userRole === 'helper' ? helperServiceHistory : bookingHistory}
+          onBack={() => setCurrentView(currentHistoryView || 'services')}
+          darkMode={darkMode}
+          onOpenChat={(helper) => {
+            setSelectedHelper(helper)
+            setChatOpen(true)
+          }}
+          userRole={userRole}
         />
       )}
 
@@ -402,6 +537,18 @@ const SnabbitApp = () => {
           onSend={handleSendMessage}
           onClose={() => setChatOpen(false)}
           darkMode={darkMode}
+        />
+      )}
+
+      {showLocationEdit && (
+        <LocationEditModal
+          isOpen={showLocationEdit}
+          onClose={() => setShowLocationEdit(false)}
+          currentLocation={userLocation}
+          onSave={handleLocationUpdate}
+          darkMode={darkMode}
+          helperProfile={userRole === 'helper' ? helperProfile : null}
+          setHelperProfile={userRole === 'helper' ? setHelperProfile : null}
         />
       )}
     </>
