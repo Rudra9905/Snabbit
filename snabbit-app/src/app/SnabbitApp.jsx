@@ -8,6 +8,7 @@ import BookingScreen from '../screens/BookingScreen'
 import BookingConfirmedScreen from '../screens/BookingConfirmedScreen'
 import HelperRegistrationScreen from '../screens/HelperRegistrationScreen'
 import HelperDashboardScreen from '../screens/HelperDashboardScreen'
+import CustomerDashboardScreen from '../screens/CustomerDashboardScreen'
 import ChatModal from '../components/ChatModal'
 
 const SnabbitApp = () => {
@@ -69,6 +70,9 @@ const SnabbitApp = () => {
   const [activeRequests, setActiveRequests] = useState([])
   const [bookingHistory, setBookingHistory] = useState([])
   const [earnings, setEarnings] = useState({ daily: 0, weekly: 0, monthly: 0 })
+
+  // Custom requests state
+  const [customRequests, setCustomRequests] = useState([])
 
   // Enhanced services with categories and emergency options
   const services = useMemo(() => ([
@@ -223,7 +227,7 @@ const SnabbitApp = () => {
     }
     
     if (role === 'customer') {
-      setCurrentView('services')
+      setCurrentView('customer-dashboard')
     } else {
       setCurrentView(helperRegistered ? 'helper-dashboard' : 'helper-registration')
     }
@@ -304,6 +308,15 @@ const SnabbitApp = () => {
           darkMode={darkMode}
           setDarkMode={setDarkMode}
           setEmergencyMode={setEmergencyMode}
+        />
+      )}
+      {currentView === 'customer-dashboard' && (
+        <CustomerDashboardScreen
+          userDetails={userDetails}
+          bookingHistory={bookingHistory}
+          onBackToServices={() => setCurrentView('services')}
+          onOpenChat={() => setChatOpen(true)}
+          darkMode={darkMode}
         />
       )}
       {currentView === 'services' && (
@@ -389,6 +402,7 @@ const SnabbitApp = () => {
           onEdit={() => setCurrentView('helper-registration')}
           onBackToLogin={() => setCurrentView('login')}
           onOpenChat={() => setChatOpen(true)}
+          darkMode={darkMode}
         />
       )}
 
