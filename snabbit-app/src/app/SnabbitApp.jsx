@@ -12,6 +12,8 @@ import CustomerDashboardScreen from '../screens/CustomerDashboardScreen'
 import HistoryScreen from '../screens/HistoryScreen'
 import ChatModal from '../components/ChatModal'
 import LocationEditModal from '../components/LocationEditModal'
+import HelperProfileScreen from '../screens/HelperProfileScreen'
+import LeaveReviewScreen from '../screens/LeaveReviewScreen'
 
 const SnabbitApp = () => {
   const [currentView, setCurrentView] = useState('login')
@@ -467,6 +469,10 @@ const SnabbitApp = () => {
             setSelectedHelper(helper)
             setChatOpen(true)
           }}
+          onViewProfile={(helper) => {
+            setSelectedHelper(helper)
+            setCurrentView('helper-profile')
+          }}
           darkMode={darkMode}
           sortBy={sortBy}
           setSortBy={setSortBy}
@@ -498,6 +504,17 @@ const SnabbitApp = () => {
           onOpenChat={() => setChatOpen(true)}
         />
       )}
+      {currentView === 'leave-review' && (
+        <LeaveReviewScreen
+          selectedHelper={selectedHelper}
+          onBack={() => setCurrentView('booking-confirmed')}
+          onSubmit={({ helperId, rating, comment }) => {
+            // In a real app, send to backend; for now, just return to services
+            setCurrentView('services')
+          }}
+          darkMode={darkMode}
+        />
+      )}
       {currentView === 'helper-registration' && (
         <HelperRegistrationScreen
           services={services}
@@ -525,6 +542,14 @@ const SnabbitApp = () => {
             setCurrentHistoryView('helper-dashboard')
             setCurrentView('history')
           }}
+        />
+      )}
+      {currentView === 'helper-profile' && (
+        <HelperProfileScreen
+          selectedHelper={selectedHelper}
+          onBack={() => setCurrentView('helpers')}
+          onBook={() => setCurrentView('booking')}
+          darkMode={darkMode}
         />
       )}
 

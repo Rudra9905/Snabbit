@@ -1,7 +1,7 @@
 import React from 'react'
 import { ArrowLeft, MessageCircle, Star, MapPin, Clock, CheckCircle2, Shield, Eye } from 'lucide-react'
 
-const HelpersScreen = ({ selectedService, availableHelpers, onBack, onSelectHelper, onOpenChat, darkMode, sortBy, setSortBy, favorites, setFavorites }) => (
+const HelpersScreen = ({ selectedService, availableHelpers, onBack, onSelectHelper, onOpenChat, onViewProfile, darkMode, sortBy, setSortBy, favorites, setFavorites }) => (
   <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
     <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-sm p-4 flex items-center`}>
       <button onClick={onBack} className="mr-4">
@@ -68,13 +68,6 @@ const HelpersScreen = ({ selectedService, availableHelpers, onBack, onSelectHelp
                     </div>
                     {helper.emergencyService && <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">24/7</span>}
                   </div>
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {helper.badges.map((badge, index) => (
-                      <span key={index} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                        {badge}
-                      </span>
-                    ))}
-                  </div>
                   <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'} mb-3`}>
                     <span>Languages: {helper.languages.join(', ')}</span>
                     <span className="mx-2">•</span>
@@ -86,7 +79,7 @@ const HelpersScreen = ({ selectedService, availableHelpers, onBack, onSelectHelp
                       <MessageCircle size={16} className="mr-1" />
                       Chat
                     </button>
-                    <button className={`${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'} hover:bg-gray-200 p-2 rounded-lg transition`}>
+                    <button onClick={(e) => { e.stopPropagation(); onViewProfile?.(helper) }} className={`${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'} hover:bg-gray-200 p-2 rounded-lg transition`}>
                       <Eye size={16} />
                     </button>
                   </div>
